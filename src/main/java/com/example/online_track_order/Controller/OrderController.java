@@ -1,6 +1,7 @@
 package com.example.online_track_order.Controller;
 
 import com.example.online_track_order.Entity.Order;
+import com.example.online_track_order.Entity.OrderItem;
 import com.example.online_track_order.Entity.Product;
 import com.example.online_track_order.Entity.User;
 import com.example.online_track_order.Enum.OrderStatus;
@@ -26,10 +27,10 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> createOrder(@AuthenticationPrincipal UserDetails userDetails,
-                                             @RequestBody List<Product> products) {
+                                             @RequestBody List<OrderItem> orderItems) {
         User user = userService.findByUsername(userDetails.getUsername());
 
-        Order order = orderService.createOrder(user, products);
+        Order order = orderService.createOrder(user, orderItems);
 
         return ResponseEntity.ok(order);
     }
@@ -52,5 +53,11 @@ public class OrderController {
         Order cancelledOrder = orderService.cancelOrder(orderId);
         return ResponseEntity.ok(cancelledOrder);
     }
+     @GetMapping("/my-orders")
+    public ResponseEntity<List<Order>> getUserOrders(@AuthenticationPrincipal UserDetails userDetails){
+        User user = userService.findByUsername(userDetails.getUsername());
+        List<Order> orders = orderService.getUserOrders(user);
+        return ResponseEntity.ok(orders);
+     }
 
 }
